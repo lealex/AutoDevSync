@@ -1,0 +1,9 @@
+AutoDevSync-
+AutoDevSync/bin
+AutoDevSync/obj
+AutoDevSyncControl/bin
+AutoDevSyncControl/obj
+InstallHelper/obj
+Setup1/Release
+AutoDevSyncControl/splash1-.ico
+Setup1/Debug
