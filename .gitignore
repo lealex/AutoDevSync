@@ -1,3 +1,33 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
 AutoDevSync-
 AutoDevSync/bin
 AutoDevSync/obj
@@ -7,3 +37,4 @@ InstallHelper/obj
 Setup1/Release
 AutoDevSyncControl/splash1-.ico
 Setup1/Debug
+
