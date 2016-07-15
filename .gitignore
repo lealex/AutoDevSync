@@ -37,4 +37,5 @@ InstallHelper/obj
 Setup1/Release
 AutoDevSyncControl/splash1-.ico
 Setup1/Debug
-
+InstallHelper/bin
+InstallHelper/obj
