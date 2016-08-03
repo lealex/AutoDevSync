@@ -998,5 +998,27 @@ namespace AutoDevSync
             dialog.InitialDirectory = txtSource.Text;
             dialog.ShowDialog();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult res = openFileDialog1.ShowDialog();
+            if (res == System.Windows.Forms.DialogResult.OK)
+            {
+                byte[] data = File.ReadAllBytes(openFileDialog1.FileName);
+                String dataString = "";
+                int i = 1;
+                foreach (byte item in data)
+                {
+                    dataString = dataString + "0x" + item.ToString("X2") + ", ";
+                    if (i % 8 == 0)
+                    {
+                        dataString = dataString + "\n";
+                        i = 0;
+                    }
+                    i++;
+                }
+                MessageBox.Show(dataString);
+            }
+        }
     }
 }

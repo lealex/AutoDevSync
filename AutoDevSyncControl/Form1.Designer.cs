@@ -82,6 +82,8 @@
             this.btnOpenReformatted = new System.Windows.Forms.Button();
             this.chkReadOnly = new System.Windows.Forms.CheckBox();
             this.btnDepends = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.contextMenuStrip1.SuspendLayout();
             this.menuTreeViewer.SuspendLayout();
             this.SuspendLayout();
@@ -531,11 +533,26 @@
             this.btnDepends.UseVisualStyleBackColor = true;
             this.btnDepends.Click += new System.EventHandler(this.btnDepends_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(728, 303);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 34;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // FrmAutoDevSync
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(875, 591);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnDepends);
             this.Controls.Add(this.chkReadOnly);
             this.Controls.Add(this.btnChooseLog);
@@ -642,6 +659,8 @@
         private System.Windows.Forms.Button btnOpenReformatted;
         private System.Windows.Forms.CheckBox chkReadOnly;
         private System.Windows.Forms.Button btnDepends;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 
