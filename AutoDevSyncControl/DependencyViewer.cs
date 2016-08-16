@@ -119,9 +119,10 @@ namespace AutoDevSync
                     string p = "";
                     foreach (string item in reader.ReadElementContentAsString().Split(';'))
                     {
-                        p = p + "\n" + item;
+                        treeDependencies.Nodes.Add(item);
+                        //p = p + "\n" + item;
                     }
-                    MessageBox.Show(p);
+                    //MessageBox.Show(p);
                 }
                 reader.Close();
             }
