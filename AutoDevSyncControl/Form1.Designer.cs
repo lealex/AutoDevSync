@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmAutoDevSync));
             this.notify = new System.Windows.Forms.NotifyIcon(this.components);
