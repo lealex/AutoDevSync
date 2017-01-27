@@ -9,12 +9,28 @@ using System.Text;
 using System.IO;
 using Microsoft.Win32;
 using System.Threading;
-
+using System.Text.RegularExpressions;
+//using ExtentionMethods
 namespace AutoDevSync
 {
+    public static class MyExtensionMethod
+    {
+        public static int PathCount(this String path)
+        {
+            return Regex.Matches(path, ";").Count;
+        }
+        public static int PathNumber(this String myWatcher, String compare)
+        {
+             var s = from w in Regex.Matches(myWatcher, ";") 
+                where w.Equals(compare);
+                select w;
+
+        }
+    }
     public partial class AutoDevSync : ServiceBase
     {
-        public  const String sSynchronisedFilesFile = "FilesSynchronized.txt";
+
+        public const String sSynchronisedFilesFile = "c:\\FilesSynchronized.txt";
 
         public const String sRegSource = "source";
         public const String sRegDestination = "destination";
@@ -23,6 +39,7 @@ namespace AutoDevSync
         public const String sRegLogFile = "logfile";
 
         private FileSystemWatcher watcher;
+        private FileSystemWatcher[] watchers;
         private static Object lockLogFile = new Object();
         private static Object lockFileSync = new Object();
         private static Object syncLocker = new Object();
@@ -72,7 +89,6 @@ namespace AutoDevSync
                         if (!mDestination.EndsWith("\\") &&
                             !newpath.StartsWith("\\"))
                         {
-
                             newpath = "\\" + newpath;
                         }
 
@@ -101,6 +117,7 @@ namespace AutoDevSync
                             File.Copy(e.FullPath, destpath);
                             WriteToLog(e.FullPath + " copied to " + destpath);
                             mSyncedFiles.AddLast(newpath);
+                            WriteToFilesLog(newpath);
                         }
                         catch (Exception ex)
                         {
@@ -120,7 +137,7 @@ namespace AutoDevSync
             try
             {
                 RegistryKey sub = Registry.LocalMachine.OpenSubKey("Software\\AutoDevSync", false);
-                
+
                 mSource = sub.GetValue(sRegSource, "").ToString();
                 mDestination = sub.GetValue(sRegDestination, "").ToString();
                 mExclude = sub.GetValue(sRegExclude, "").ToString();
@@ -134,23 +151,24 @@ namespace AutoDevSync
                 {
                     throw new IOException("OnStart: Must set source and destination paths");
                 }
-
-                if (!Directory.Exists(mDestination))
+                String[] destinations = mDestination.Split(";");
+                foreach (String dest in destinations)
                 {
-                    try
+                    if (!Directory.Exists(dest))
                     {
-                        WriteToLog("Destination directory is " + mDestination);
-                        Directory.CreateDirectory(mDestination);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
-                        throw new IOException("OnStart: Must set an accessable source and destination paths.\n" + ex.Message);
+                        try
+                        {
+                            WriteToLog("Destination directory is " + dest);
+                            Directory.CreateDirectory(dest);
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
+                            throw new IOException("OnStart: Must set an accessable source and destination paths.\n" + ex.Message);
+                        }
                     }
                 }
-
-                //ReadFromFilesLog();
+                ReadFromFilesLog();
 
                 StartFileWatcher();
             }
@@ -163,13 +181,20 @@ namespace AutoDevSync
 
         private void StartFileWatcher()
         {
-            watcher = new FileSystemWatcher(mSource);
-            WriteToLog("Synchronizing from " + mSource + " to " + mDestination);
-            watcher.IncludeSubdirectories = true;
-            watcher.EnableRaisingEvents = true;
-            watcher.Changed += OnChanged;
-            watcher.Created += OnChanged;
+            int i = 0;
+            watchers = new String[mSource.PathCount];
+            foreach (var src in mSource.Split(";"))
+            {
+                watchers[i] = new FileSystemWatcher(mSource);
+                WriteToLog("Synchronizing from " + mSource + " to " + mDestination);
+                watchers[i].IncludeSubdirectories = true;
+                watchers[i].EnableRaisingEvents = true;
+                watchers[i].Changed += OnChanged;
+                watchers[i].Created += OnChanged;
+                i++;
+            }
         }
+
         static void WriteToLog(String logText)
         {
             if (String.IsNullOrWhiteSpace(mLogFile))
