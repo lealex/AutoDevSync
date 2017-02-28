@@ -25,7 +25,7 @@ namespace AutoDevSync
                 where w.Equals(compare);
                 select w;
 
-        }
+        }/*as/decimal*as/decimal*das*d*asd/*as*/
     }
     public partial class AutoDevSync : ServiceBase
     {
