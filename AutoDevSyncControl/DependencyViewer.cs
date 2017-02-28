@@ -74,7 +74,6 @@ namespace AutoDevSync
                     }
                     catch (Exception)
                     {
-                        //fkladjf sdlfjksdf sdkl klsdklsdflss
                     }
                     reg.Close();
                 }
@@ -123,7 +122,7 @@ namespace AutoDevSync
                         p = p + "\n" + item;
                     }
                     MessageBox.Show(p);
-                }//fkladjf sdlfjksdf sdkl klsdklsdflss
+                }
                 reader.Close();
             }
 
@@ -213,7 +212,7 @@ namespace AutoDevSync
                 FileInfo fileInfo = new FileInfo(item.FullFileName);
                 if (fileInfo.Name.StartsWith(file.Substring(0, file.LastIndexOf('.'))))
                 {
-                    return index;//fkladjf sdlfjksdf sdkl klsdklsdflss
+                    return index;
                 }
                 index++;
             }
@@ -246,4 +245,3 @@ namespace AutoDevSync
         }
     }
 }
-//fkladjf sdlfjksdf sdkl klsdklsdflss
