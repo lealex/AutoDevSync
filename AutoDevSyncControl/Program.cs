@@ -18,6 +18,9 @@ namespace AutoDevSync
             FrmAutoDevSync form = new FrmAutoDevSync(args);
             Application.Run(form);
             // release 1
+
+            // release 2
+
         }
     }
 }
