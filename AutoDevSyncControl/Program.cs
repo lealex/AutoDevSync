@@ -17,7 +17,7 @@ namespace AutoDevSync
             Application.SetCompatibleTextRenderingDefault(false);
             FrmAutoDevSync form = new FrmAutoDevSync(args);
             Application.Run(form);
-            
+            // release 1
         }
     }
 }
