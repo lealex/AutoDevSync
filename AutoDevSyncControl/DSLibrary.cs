@@ -38,6 +38,14 @@ namespace AutoDevSync
             IsLibrary = isLibrary;
             ProjectName = projectName;
             OutputFileName = outputFileName;
+			/*
+			
+			sd sdjf sdlf sdlflsdlksdff
+			 sd falsesd
+			 fs
+			 
+			
+			*/
         }
 
         public String FullFileName { get; set; }
