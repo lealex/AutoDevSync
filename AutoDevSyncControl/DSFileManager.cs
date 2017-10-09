@@ -59,47 +59,53 @@ namespace AutoDevSync
 
             DirectoryInfo dir = new DirectoryInfo(origPath);
             string temp = dest.EndsWith("\\") ? dest : dest + "\\";
-            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            try
             {
-                listModifiedFiles(subDir.FullName, temp + subDir.Name, from, to);
-            }
-
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                bool moveFile = false;
-                bool excludeFile = false;
-                foreach (string item in Excludes.Split(';'))
+                foreach (DirectoryInfo subDir in dir.GetDirectories())
                 {
-                    if (file.FullName.ToLower().Contains(item.ToLower()))
-                    {
-                        excludeFile = true;
-                        break;
-                    }
+                    listModifiedFiles(subDir.FullName, temp + subDir.Name, from, to);
                 }
-                if (!excludeFile)
+
+                foreach (FileInfo file in dir.GetFiles())
                 {
-                    foreach (string item in Filters.Split(';'))
+                    bool moveFile = false;
+                    bool excludeFile = false;
+                    foreach (string item in Excludes.Split(';'))
                     {
-                        if (file.Name.ToLower().EndsWith(item.ToLower()))
+                        if (file.FullName.ToLower().Contains(item.ToLower()))
                         {
-                            moveFile = true;
+                            excludeFile = true;
                             break;
                         }
                     }
-                }
-
-                if (
-                    (moveFile) &&
-                    (file.LastWriteTime.CompareTo(from) >= 0) &&
-                    (file.LastWriteTime.CompareTo(to) <= 0)
-                    )
-                {
-                    if (ScanReadOnly ||
-                        (file.Attributes & FileAttributes.ReadOnly) != FileAttributes.ReadOnly)
+                    if (!excludeFile)
                     {
-                        FilesModified.Add(file.FullName);
+                        foreach (string item in Filters.Split(';'))
+                        {
+                            if (file.Name.ToLower().EndsWith(item.ToLower()))
+                            {
+                                moveFile = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (
+                        (moveFile) &&
+                        (file.LastWriteTime.CompareTo(from) >= 0) &&
+                        (file.LastWriteTime.CompareTo(to) <= 0)
+                        )
+                    {
+                        if (ScanReadOnly ||
+                            (file.Attributes & FileAttributes.ReadOnly) != FileAttributes.ReadOnly)
+                        {
+                            FilesModified.Add(file.FullName);
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
             }
         }
 
