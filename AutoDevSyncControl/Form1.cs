@@ -147,15 +147,23 @@ namespace AutoDevSync
 
         private void ServiceRefresh()
         {
-            sc.Refresh();
-            lblerviceStatus.Text = sc.Status.ToString();
-            if (sc.Status != ServiceControllerStatus.Running)
+            try
             {
-                lblerviceStatus.BackColor = Color.OrangeRed;
+                sc.Refresh();
+                lblerviceStatus.Text = sc.Status.ToString();
+                if (sc.Status != ServiceControllerStatus.Running)
+                {
+                    lblerviceStatus.BackColor = Color.OrangeRed;
+                }
+                else
+                {
+                    lblerviceStatus.BackColor = Color.LightGreen;
+                }
             }
-            else
+            catch (Exception)
             {
-                lblerviceStatus.BackColor = Color.LightGreen;
+                lblerviceStatus.Text = "Not installed";
+                lblerviceStatus.BackColor = Color.OrangeRed;
             }
         }
 
@@ -240,36 +248,42 @@ namespace AutoDevSync
             {
                 MessageBox.Show(ex.Message);
             }
-
-            if ((sc.Status.Equals(ServiceControllerStatus.Stopped)) ||
-                 (sc.Status.Equals(ServiceControllerStatus.StopPending)))
+            try
             {
-                // Start the service if the current status is stopped.
 
-                Console.WriteLine("Starting the Telnet service...");
-                sc.Start();
-            }
-            else
-            {
-                // Stop the service if its status is not set to "Stopped".
-
-                Console.WriteLine("Stopping the Telnet service...");
-                sc.Stop();
-                try
+                if ((sc.Status.Equals(ServiceControllerStatus.Stopped)) ||
+                     (sc.Status.Equals(ServiceControllerStatus.StopPending)))
                 {
-                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(2));
+                    // Start the service if the current status is stopped.
+
+                    Console.WriteLine("Starting the Telnet service...");
                     sc.Start();
-                    sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(2));
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                }
-            }
+                    // Stop the service if its status is not set to "Stopped".
 
-            // Refresh and display the current service status.
-            sc.Refresh();
-            Console.WriteLine("The service status is now set to {0}.", sc.Status);
+                    Console.WriteLine("Stopping the Telnet service...");
+                    sc.Stop();
+                    try
+                    {
+                        sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(2));
+                        sc.Start();
+                        sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(2));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+
+                // Refresh and display the current service status.
+                sc.Refresh();
+                Console.WriteLine("The service status is now set to {0}.", sc.Status);
+            }
+            catch (Exception)
+            {
+            }
             RefreshData();
         }
 
@@ -915,17 +929,25 @@ namespace AutoDevSync
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-            if (sc.Status == ServiceControllerStatus.Running)
+            try
             {
-                startServiceToolStripMenuItem.Enabled = false;
-                stopServiceToolStripMenuItem.Enabled = true;
+                if (sc.Status == ServiceControllerStatus.Running)
+                {
+                    startServiceToolStripMenuItem.Enabled = false;
+                    stopServiceToolStripMenuItem.Enabled = true;
+                }
+                else if (sc.Status == ServiceControllerStatus.Stopped)
+                {
+                    startServiceToolStripMenuItem.Enabled = true;
+                    stopServiceToolStripMenuItem.Enabled = false;
+                }
+                else
+                {
+                    startServiceToolStripMenuItem.Enabled = false;
+                    stopServiceToolStripMenuItem.Enabled = false;
+                }
             }
-            else if (sc.Status == ServiceControllerStatus.Stopped)
-            {
-                startServiceToolStripMenuItem.Enabled = true;
-                stopServiceToolStripMenuItem.Enabled = false;
-            }
-            else
+            catch (Exception)
             {
                 startServiceToolStripMenuItem.Enabled = false;
                 stopServiceToolStripMenuItem.Enabled = false;
