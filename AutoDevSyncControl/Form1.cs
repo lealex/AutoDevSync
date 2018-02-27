@@ -47,7 +47,7 @@ namespace AutoDevSync
             // ot
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
-            //c4sp
+            //other
             foreach (Process item in remoteByName)
             {
                 if (
@@ -146,6 +146,7 @@ namespace AutoDevSync
             }
             mSourceCompareDistPath = "";
             mDestCompareDistPath = "";
+            //other
         }
 
         private void ServiceRefresh()
