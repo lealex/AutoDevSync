@@ -47,7 +47,7 @@ namespace AutoDevSync
 
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
-
+            //other
             foreach (Process item in remoteByName)
             {
                 if (
