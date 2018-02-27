@@ -47,7 +47,7 @@ namespace AutoDevSync
 
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
-
+            //c4sp
             foreach (Process item in remoteByName)
             {
                 if (
@@ -83,6 +83,7 @@ namespace AutoDevSync
 
         private void RefreshData()
         {
+            //c4sp
             int s = GetScrollPos((int)treeView1.Handle, 1);
             txtDestination.ResetBackColor();
             RegistryKey reg = Registry.LocalMachine.OpenSubKey(SRegistryPath, false);
