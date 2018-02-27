@@ -143,6 +143,7 @@ namespace AutoDevSync
             }
             mSourceCompareDistPath = "";
             mDestCompareDistPath = "";
+            //other
         }
 
         private void ServiceRefresh()
