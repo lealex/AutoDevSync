@@ -47,7 +47,7 @@ namespace AutoDevSync
 
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
-
+            //other
             foreach (Process item in remoteByName)
             {
                 if (
@@ -143,6 +143,7 @@ namespace AutoDevSync
             }
             mSourceCompareDistPath = "";
             mDestCompareDistPath = "";
+            //other
         }
 
         private void ServiceRefresh()
@@ -965,7 +966,7 @@ namespace AutoDevSync
                     using (StreamWriter writer = new StreamWriter(new FileStream(txtLogFile.Text + ".reformated.log", FileMode.Create)))
                     {
                         String line = reader.ReadLine();
-                        while (!String.IsNullOrEmpty(line))
+                        while (line!=null)
                         {
                             int ind = line.LastIndexOf('|') + 1;
                             if (ind > 0)
@@ -973,6 +974,10 @@ namespace AutoDevSync
                                 string newline = line.Substring(ind);
                                 writer.WriteLine(newline);
                             }
+							else
+							{
+								writer.WriteLine(line);
+							}
                             line = reader.ReadLine();
                         }
                     }
