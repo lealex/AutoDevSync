@@ -44,7 +44,7 @@ namespace AutoDevSync
         //private const int SbVert = 0x1;
         public FrmAutoDevSync(string[] args)
         {
-
+            // ot
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
 
@@ -79,6 +79,8 @@ namespace AutoDevSync
                 //treeView1.CheckBoxes = true;
                 RefreshData();
             }
+
+            // ot
         }
 
         private void RefreshData()
