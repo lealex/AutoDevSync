@@ -74,7 +74,6 @@ namespace AutoDevSync
                     }
                     catch (Exception)
                     {
-                        //fkladjf sdlfjksdf sdkl klsdklsdflss
                     }
                     reg.Close();
                 }
@@ -120,10 +119,11 @@ namespace AutoDevSync
                     string p = "";
                     foreach (string item in reader.ReadElementContentAsString().Split(';'))
                     {
-                        p = p + "\n" + item;
+                        treeDependencies.Nodes.Add(item);
+                        //p = p + "\n" + item;
                     }
-                    MessageBox.Show(p);
-                }//fkladjf sdlfjksdf sdkl klsdklsdflss
+                    //MessageBox.Show(p);
+                }
                 reader.Close();
             }
 
@@ -213,7 +213,7 @@ namespace AutoDevSync
                 FileInfo fileInfo = new FileInfo(item.FullFileName);
                 if (fileInfo.Name.StartsWith(file.Substring(0, file.LastIndexOf('.'))))
                 {
-                    return index;//fkladjf sdlfjksdf sdkl klsdklsdflss
+                    return index;
                 }
                 index++;
             }
@@ -246,16 +246,3 @@ namespace AutoDevSync
         }
     }
 }
-//fkladjf sdlfjksdf sdkl klsdklsdflss
-
-//dfa
-//sd
-//asd
-//as
-//das
-//delegateasd
-//asd
-
-//as
-//as
-//delegatead

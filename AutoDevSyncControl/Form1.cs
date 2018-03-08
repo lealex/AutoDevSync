@@ -44,7 +44,7 @@ namespace AutoDevSync
         //private const int SbVert = 0x1;
         public FrmAutoDevSync(string[] args)
         {
-            // ot
+			//test000
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
             //other
@@ -59,6 +59,8 @@ namespace AutoDevSync
                 }
             }
             if (args.Length > 0)
+
+				///sjhadska
             {
                 if (args[0].Equals("/w"))
                 {
@@ -1028,26 +1030,27 @@ namespace AutoDevSync
             dialog.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DialogResult res = openFileDialog1.ShowDialog();
-            if (res == System.Windows.Forms.DialogResult.OK)
-            {
-                byte[] data = File.ReadAllBytes(openFileDialog1.FileName);
-                String dataString = "";
-                int i = 1;
-                foreach (byte item in data)
-                {
-                    dataString = dataString + "0x" + item.ToString("X2") + ", ";
-                    if (i % 8 == 0)
-                    {
-                        dataString = dataString + "\n";
-                        i = 0;
-                    }
-                    i++;
-                }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    DialogResult res = openFileDialog1.ShowDialog();
+        //    if (res == System.Windows.Forms.DialogResult.OK)
+        //    {
+                //byte[] data = File.ReadAllBytes(openFileDialog1.FileName);
+                //String dataString = "";
+                //int i = 1;
+                //foreach (byte item in data)
+                //{
+                //    dataString = dataString + "0x" + item.ToString("X2") + ", ";
+                //    if (i % 8 == 0)
+                //    {
+                //        dataString = dataString + "\n";
+                //        i = 0;
+                //    }
+                //    i++;
+                //}
                 MessageBox.Show(dataString);
             }
         }
     }
 }
+///sjhadska

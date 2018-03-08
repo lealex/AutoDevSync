@@ -10,14 +10,27 @@ using System.IO;
 using Microsoft.Win32;
 using System.Threading;
 using System.Text.RegularExpressions;
-
+//using ExtentionMethods
 namespace AutoDevSync
 {
-  
+    public static class MyExtensionMethod
+    {
+        public static int PathCount(this String path)
+        {
+            return Regex.Matches(path, ";").Count;
+        }
+        public static int PathNumber(this String myWatcher, String compare)
+        {
+             var s = from w in Regex.Matches(myWatcher, ";") 
+                where w.Equals(compare);
+                select w;
+
+        }
+    }
     public partial class AutoDevSync : ServiceBase
     {
 
-        public const String sSynchronisedFilesFile = "";//"c:\\FilesSynchronized.txt";
+        public const String sSynchronisedFilesFile = "c:\\FilesSynchronized.txt";
 
         public const String sRegSource = "source";
         public const String sRegDestination = "destination";
@@ -25,6 +38,7 @@ namespace AutoDevSync
         public const String sRegExclude = "exclude";
         public const String sRegLogFile = "logfile";
 
+        private FileSystemWatcher watcher;
         private FileSystemWatcher[] watchers;
         private static Object lockLogFile = new Object();
         private static Object lockFileSync = new Object();
@@ -46,12 +60,7 @@ namespace AutoDevSync
         // Define the event handlers.
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            string srcpath = null;
-            string dstpath = null;
-            string[] srcArray = mSource.Split(';');
-            string[] dstArray = mDestination.Split(';');
             bool moveFile = false;
-
             foreach (string item in mExclude.Split(';'))
             {
                 if (e.FullPath.ToLower().Contains(item))
@@ -67,72 +76,58 @@ namespace AutoDevSync
                     break;
                 }
             }
-
-            for (int i = 0; i < srcArray.Length; i++)
+            lock (syncLocker)
             {
-                if (e.FullPath.StartsWith(srcArray[i]))
+                try
                 {
-                    srcpath = srcArray[i];
-                    dstpath = dstArray[i];
-                    break;
-                }
-            }
-
-            if ((dstpath != null) && (srcpath != null))
-            {
-                lock (syncLocker)
-                {
-                    try
+                    if (moveFile &&
+                           !stopped &&
+                           mDestination.Length > 0 &&
+                           mSource.Length > 0)
                     {
-                        if (moveFile &&
-                               !stopped &&
-                               dstpath.Length > 0 &&
-                               srcpath.Length > 0)
+                        string newpath = e.FullPath.Substring(e.FullPath.IndexOf(mSource) + mSource.Length);
+                        if (!mDestination.EndsWith("\\") &&
+                            !newpath.StartsWith("\\"))
                         {
-                            string newpath = e.FullPath.Substring(e.FullPath.IndexOf(srcpath) + srcpath.Length);
-                            if (!dstpath.EndsWith("\\") &&
-                                !newpath.StartsWith("\\"))
-                            {
-                                newpath = "\\" + newpath;
-                            }
+                            newpath = "\\" + newpath;
+                        }
 
-                            string destpath = dstpath + newpath;
+                        string destpath = mDestination + newpath;
 
-                            if (File.Exists(destpath))
+                        if (File.Exists(destpath))
+                        {
+                            WriteToLog("Deleting old file " + mSource);
+                            File.Delete(destpath);
+                        }
+                        try
+                        {
+                            string path = destpath.Substring(0, destpath.LastIndexOf('\\'));
+                            if (!Directory.Exists(path))
                             {
-                                WriteToLog("Deleting old file " + srcpath);
-                                File.Delete(destpath);
-                            }
-                            try
-                            {
-                                string path = destpath.Substring(0, destpath.LastIndexOf('\\'));
-                                if (!Directory.Exists(path))
-                                {
-                                    Directory.CreateDirectory(path);
-                                    WriteToLog("Directory path created " + path);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
-                            }
-                            try
-                            {
-                                File.Copy(e.FullPath, destpath);
-                                WriteToLog(e.FullPath + " copied to " + destpath);
-                                mSyncedFiles.AddLast(newpath);
-                                WriteToFilesLog(newpath);
-                            }
-                            catch (Exception ex)
-                            {
-                                WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
+                                Directory.CreateDirectory(path);
+                                WriteToLog("Directory path created " + path);
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
+                        }
+                        try
+                        {
+                            File.Copy(e.FullPath, destpath);
+                            WriteToLog(e.FullPath + " copied to " + destpath);
+                            mSyncedFiles.AddLast(newpath);
+                            WriteToFilesLog(newpath);
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteToLog("EXCEPTION: " + ex.Message + ";  " + ex.Data + ";  " + ex.StackTrace);
                 }
             }
         }
@@ -156,7 +151,7 @@ namespace AutoDevSync
                 {
                     throw new IOException("OnStart: Must set source and destination paths");
                 }
-                String[] destinations = mDestination.Split(';');
+                String[] destinations = mDestination.Split(";");
                 foreach (String dest in destinations)
                 {
                     if (!Directory.Exists(dest))
@@ -187,12 +182,11 @@ namespace AutoDevSync
         private void StartFileWatcher()
         {
             int i = 0;
-            string []destArr = mDestination.Split(';');
-            watchers = new FileSystemWatcher[mSource.Split(';').Length];
-            foreach (var src in mSource.Split(';'))
+            watchers = new String[mSource.PathCount];
+            foreach (var src in mSource.Split(";"))
             {
-                watchers[i] = new FileSystemWatcher(src);
-                WriteToLog("Synchronizing from " + src + " to " + destArr[i]);
+                watchers[i] = new FileSystemWatcher(mSource);
+                WriteToLog("Synchronizing from " + mSource + " to " + mDestination);
                 watchers[i].IncludeSubdirectories = true;
                 watchers[i].EnableRaisingEvents = true;
                 watchers[i].Changed += OnChanged;
@@ -278,16 +272,7 @@ namespace AutoDevSync
         protected override void OnStop()
         {
             stopped = true;
-            foreach (FileSystemWatcher item in watchers)
-            {
-                try
-                {
-                    item.Dispose();
-                }
-                catch (Exception)
-                {
-                }
-            }
+            watcher.Dispose();
         }
     }
 }
