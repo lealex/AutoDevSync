@@ -161,6 +161,12 @@
       <DependentUpon>Service1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InstallHelper\InstallHelper.csproj">
+      <Project>{6983dd6c-4d57-49f2-8f79-2ecfcc1f73d0}</Project>
+      <Name>InstallHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
