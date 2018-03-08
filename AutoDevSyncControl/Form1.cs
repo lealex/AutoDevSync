@@ -39,12 +39,12 @@ namespace AutoDevSync
 
         [DllImport("user32.dll")]
         static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
-			//test000
+
         //private const int SbHorz = 0x0;
         //private const int SbVert = 0x1;
         public FrmAutoDevSync(string[] args)
         {
-
+			//test000
             InitializeComponent();
             Process[] remoteByName = Process.GetProcesses();
 
@@ -1023,24 +1023,24 @@ namespace AutoDevSync
             dialog.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DialogResult res = openFileDialog1.ShowDialog();
-            if (res == System.Windows.Forms.DialogResult.OK)
-            {
-                byte[] data = File.ReadAllBytes(openFileDialog1.FileName);
-                String dataString = "";
-                int i = 1;
-                foreach (byte item in data)
-                {
-                    dataString = dataString + "0x" + item.ToString("X2") + ", ";
-                    if (i % 8 == 0)
-                    {
-                        dataString = dataString + "\n";
-                        i = 0;
-                    }
-                    i++;
-                }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    DialogResult res = openFileDialog1.ShowDialog();
+        //    if (res == System.Windows.Forms.DialogResult.OK)
+        //    {
+                //byte[] data = File.ReadAllBytes(openFileDialog1.FileName);
+                //String dataString = "";
+                //int i = 1;
+                //foreach (byte item in data)
+                //{
+                //    dataString = dataString + "0x" + item.ToString("X2") + ", ";
+                //    if (i % 8 == 0)
+                //    {
+                //        dataString = dataString + "\n";
+                //        i = 0;
+                //    }
+                //    i++;
+                //}
                 MessageBox.Show(dataString);
             }
         }
