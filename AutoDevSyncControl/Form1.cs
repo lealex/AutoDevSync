@@ -39,7 +39,7 @@ namespace AutoDevSync
 
         [DllImport("user32.dll")]
         static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
-
+			//test000
         //private const int SbHorz = 0x0;
         //private const int SbVert = 0x1;
         public FrmAutoDevSync(string[] args)
@@ -59,6 +59,8 @@ namespace AutoDevSync
                 }
             }
             if (args.Length > 0)
+
+				///sjhadska
             {
                 if (args[0].Equals("/w"))
                 {
@@ -1044,3 +1046,4 @@ namespace AutoDevSync
         }
     }
 }
+///sjhadska
