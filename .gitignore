@@ -27,6 +27,7 @@
 *.exe
 *.out
 *.app
+*.test
 
 AutoDevSync-
 AutoDevSync/bin
